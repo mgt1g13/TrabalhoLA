@@ -6,7 +6,8 @@
 \usepackage{algorithm}
 %\usepackage{Algorithm2e}
 \usepackage{graphicx,url}
-
+\usepackage{amsmath}
+\usepackage{tikz}
 \usepackage[brazil]{babel}   
 \usepackage[latin1]{inputenc}  
 
@@ -46,292 +47,76 @@ performance.
 \end{resumo}
 
 
-\section{Introdução}
-
-Em computação, é recorrente encontrar problemas que, devido a limitações dos computares, não se é possível resolver em tempo hábil para certas entradas. Muitas vezes, algoritmos completamente funcionais para entradas pequenas se tornam inutilizáveis para entradas grandes. No intuito de prever o desempenho de algoritmos, podemos usar técnicas para estimar o crescimento da quantidade de instruções necessárias para resolver um dado problema em função do tamanho da entrada. Vale ressaltar que essas técnicas são independentes de arquitetura e simplesmente mostram como o custo computacional se comporta.
-
-Para exemplificar esse conceito, esse artigo faz uma análise de complexidade do problema clássico do máximo subarray. Nessa análise, serão apresentadas  três algoritmos que resolvem esse problema. Cada um desses algoritmos possui uma complexidade, i.e., um crescimento do custo computacional, diferente. Essas complexidades serão demonstradas usando diversas técnicas, dependendo da estrutura do algoritmo. As soluções apresentadas são baseadas em \cite{Cormen:2001:IA:580470}
-
-\include{teste}
-
 \section{Definição matemática} \label{sec:firstpage}
-da
 
-
-
-
-%Discutir sobre O, THETA e Omega?
-
-\section{Soluções para o Problema}
-
-A seguir, serão discutidas diversas formas de resolver o problema. Além disso, uma extensiva análise da solução será feita para demonstrar a complexidade em cada caso.
-\subsection{Força Bruta}
-
-A solução talvez mais óbvia e simples consiste em, exaustivamente, calcular todos os subarrays e compará-los entre si. O algoritmo consiste em dois laços aninhados para montar todos os subarrays. A soma é computada e salva. Se a soma for maior que a maior soma corrente (ou não existir soma corrente), ela passa ser a maior soma e o subarray máximo passa a ser o subarray que gerou esta soma. A solução é melhor apresentada no seguinte pseudocódigo:
-\\
-
-%\sum\limits_{i=1}^n i^2 = \frac{n(n+1)(2n+1)}{6}
-%\begin{center}
-\begin{algorithm}[H]
-  \caption{Força Bruta}\label{bruteforce}
-  \begin{algorithmic}[1]
-    \Function{maxSubarray}{$A$}%\Comment{The g.c.d. of a and b}
-     \State \texttt{$maxSoma \gets -\infty$} \Comment{\parbox[t]{.2\linewidth}{$1$}}
-     \State \texttt{$n \gets len(A)$} \Comment{\parbox[t]{.2\linewidth}{$1$}}
-     \State \texttt{$i0 \gets -1$} \Comment{\parbox[t]{.2\linewidth}{$1$}}
-     \State \texttt{$j0 \gets -1$} \Comment{\parbox[t]{.2\linewidth}{$1$}}
-      \For{$i \in [1:n]$} \Comment{\parbox[t]{.2\linewidth}{$n+1$}}
-      \State \texttt{$soma \gets 0$} \Comment{\parbox[t]{.2\linewidth}{$n$}}
-    \For{$j \in [i:n]$}\Comment{\parbox[t]{.2\linewidth}{$\sum\limits_{i=1}^{n+1} i = \frac{n^2 +3n + 2}{2}$}}
-      \State \texttt{$soma \gets soma + A[j]$} \Comment{\parbox[t]{.2\linewidth}{$\sum\limits_{i=1}^{n} i = \frac{n^2 +n}{2}$}}
-      \If{$soma > maxSoma$} \Comment{\parbox[t]{.2\linewidth}{$\sum\limits_{i=1}^{n} i = \frac{n^2 +n}{2}$}}
-        \State \texttt{$maxSoma \gets soma$} \Comment{\parbox[t]{.2\linewidth}{$\sum\limits_{i=1}^{n} t_j$}}
-        \State \texttt{$i0 \gets i$}\Comment{\parbox[t]{.2\linewidth}{$\sum\limits_{i=1}^{n} t_j$}}
-        \State \texttt{$j0 \gets j$}    \Comment{\parbox[t]{.2\linewidth}{$\sum\limits_{i=1}^{n} t_j$}}   
-      \EndIf
-
-        \EndFor          
-      \EndFor
-      \State \textbf{return} $A[i0:j0]$ \Comment{\parbox[t]{.2\linewidth}{$1$}}
-    \EndFunction
-  \end{algorithmic}
-\end{algorithm}
-
-
-Ao lado de cada linha, temos a quantidade de vezes que a mesma é executada em função de $n$, o tamanho da entrada. Os somatórios surgem para representar a quantidade de vezes que a linha é executada levando em conta que ela está dentro de um laço. $t_j$ foi inserido pois as linhas executadas dentro da condicional dependem da entrada, mas no pior caso, temos o esses somatórios igual a:
+Para esta técnica, devemos escolher o hiperplano que melhor separa duas classes de dados em um espaço $n$-dimensional. Para ilustrar o ponto de partida, temos a Figura , onde os pontos positivos estão acima do hiperplano e os pontos negativos abaixo.
 
 \begin{center}
-	$\sum\limits_{i=1}^{n}t_j = \sum\limits_{i=1}^{n}i = \frac{n^2 + n}{2}$
-\end{center}
-
-Logo, temos que:
-
-\begin{center}
-	$ 0 \leq \sum\limits_{i=1}^{n}t_j \leq \frac{n^2 + n}{2}$
-\end{center}
-
-Assim, se somarmos o número de vezes que cada linha é executada, temos que a quantidade de instruções pode ser ser expressa pelo polinômio $T(n)$:
-
-\begin{center}
-	$T(n) = an^2 + bn + c \mid a, b, c \in \mathbf{R}$
-
-\end{center}
-
-Assim, desconsiderando os termos de baixa ordem, temos que, para essa solução:
-
-\begin{center}
-	$f(n) = \theta(n^2)$
-
+IMAGEM!!!!
 \end{center}
 
 
-
-
- 
-
-
-
-
-
-
-
-\subsection{Divisão e Conquista}
-
-Uma solução mais eficiente e elaborada é utilizar a técnica de divisão e conquista. A solução é definida recursivamente, dividindo o array original em arrays menores, até chegar ao caso básico onde existe somente um elemento. A ideia geral do algoritmo é dividir em três possibilidades. Ou o subarray máximo está à esquerda do meio do array, ou está à direita ou então está passando pelo meio do array. O algoritmo irá realizar a chamada recursiva para os dois primeiros casos, e para o caso de estar no meio, é utilizado uma chamada especial onde é calculado o subarray máximo de forma linear. Ao fim das chamadas recursivas, é verificado qual foi o retorno com a maior soma (maior subarray).
-A solução é descrita no Algoritmo~\ref{divideAndConquer}. A sua complexidade será analisada usando o Teorema Mestre, descrito na Seção~\ref{masterTheorem}.
-
-\begin{algorithm}[]
-  \caption{Divisão e Conquista}\label{divideAndConquer}
-  \begin{algorithmic}[1]
-  
-  \Function{FindMaxCrossingSubarray}{$A, low, mid, high$}  
-\State \texttt{$  left\_sum = -\infty$}
-\State \texttt{$  soma = 0$}
-\State \texttt{$  max\_left = mid$}
-  \For{$ i = mid~;~i > low-1~;~ i = i -1 $}
-    \State \texttt{$    soma =  soma + a[i]$}
-    \If{$soma >left_sum$}
-    \State \texttt{$      left\_sum = soma$}
-    \State \texttt{$      max\_left = i$}
-    \EndIf
-  \EndFor
-\State
-
-\State \texttt{$	right\_sum =-\infty$}
-\State \texttt{$	soma = 0$}
-\State \texttt{$	max\_right = mid$}
-	\For{$ i = mid+1 ; i< high+1 ; i = i + 1):$}
-		\State \texttt{$		soma = som + a[i]$}
-		\If{$soma >right_sum$}
-			\State \texttt{$			right\_sum = soma$}
-			\State \texttt{$			max\_right = i$}
-		\EndIf
-
-\EndFor
-\State \texttt{$  return (max\_left, max\_right, right\_sum + left\_sum)$}
-  
-  \EndFunction \State \State
-  
-  
-    \Function{SubarrayMaximoDivEConq}{$A, low, high$}%\Comment{The g.c.d. of a and b}
-    
-    \If{$low = high$}
-    \State \textbf{return} $(low, high, A[low])$
-    \EndIf
-  \State    
-    \State \texttt{$mid \gets \lfloor \frac{low + high}{2} \rfloor$}
-  \State
-\State \texttt{$  (l\_low, l\_high, l\_sum) = SubarrayMaximoDivEConq(a, low, mid)$}
-\State \texttt{$  (r\_low, r\_high, r\_sum) = SubarrayMaximoDivEConq(a, mid+1, high)$}
-\State \texttt{$  (c\_low, c\_high, c\_sum) = findMaxCrossingSubarray(a, low, mid, high)$}
-  \State
-  \If{$l\_sum >= r\_sum and l\_sum >= c\_sum$}
-        \State \textbf{return} $(l\_low, l\_high, l\_sum)$
-  
-  \ElsIf {$r\_sum >= l\_sum and r\_sum >= c\_sum$}
-        \State \textbf{return} $(r\_low, r\_high, r\_sum)$
-  \Else
-        \State \textbf{return} $(c\_low, c\_high, c\_sum)$
-  \EndIf
-    \EndFunction
-  \end{algorithmic}
-\end{algorithm}
-
-
-
-
-
-
-
-\subsubsection{Teorema Mestre}\label{masterTheorem}
-
-O Teorema Mestre \cite{Cormen:2001:IA:580470} é uma solução para análise de recorrências. Ele não resolve qualquer recorrência, no entanto,
-resolve as da forma:
-\begin{center}
-$T(n) = aT(n/b) + f(n)$
-\end{center}
-onde $a>=1$ e $b>1$. Sendo $n$ o tamanho da entrada, $a$ o número de divisões por recursão, $n/b$ é o tamanho do subproblema da próxima recursão e $f(n)$ é o custo envolvido em computações fora das chamadas recursivas e o custo de junção das soluções.
-Existem três casos onde é possível determinar o crescimento do custo:
-
-Se $f(n) = O(n^{ log_b a - \epsilon})$, para algum $\epsilon > 0$, então a solução é $T(n) \in \theta(n^{log_b a})$.
-
-O segundo caso é, se $f(n) = \theta(n^{log_b a})$,
-então a solução é $T(n) = \theta(n^{log_b a} lg~n)$.
-
-O terceiro e último caso válido é, se $f(n) = \Omega(n^{log_b a + \epsilon})$ para algum $\epsilon > 0$, e $af(n/b) <= cf(n)$, para uma constante $c<1$ e todos $n$'s suficientemente grandes, então a solução é $T(n) = \theta(f(n))$
-
-Resolvendo com a estratégia de divisão e conquista o problema do sub array máximo, podemos verificar que:
-\begin{center}
-$T(n) = 2T(n/2) + n$
-\end{center}
-Onde $a=2$ (as duas chamadas por nível de recursão), $b=2$ (o problema é dividido ao meio), e $f(n) = n$ (tempo linear da chamada da função que verifica o meio do array). Temos que:
+Para encontrar o hiperplano de fato, é mais conveniente começar por definir o classificador. Para isso, define-se uma função que, dependendo do seu resultado, mostrará se o dado é de uma classe ou de outra, e.g., positivo ou negativo. Assumindo que se conhece hiperplano, pega-se um vetor $\vec{w}$  perpendicular à ele. Temos que a projeção $P$ de um dado $\vec{d}$ sobre esse vetor tem valor dado pela seguinte função:
 
 \begin{center}
-$f(n) = \theta(n^{log_2 2}) = \theta(n)$
+\begin{equation}\label{eq1}
+P(\vec{d}) = \vec{d} \cdot \vec{w} = \|\vec{d}\|.\|\vec{w}\|.\cos(\theta) = C.\|\vec{d}\|.\cos(\theta)
+\end{equation}
 \end{center}
 
-Assim, a condição  do segundo caso está satisfeitas. Aplicando o teorema, temos:
-\begin{center}
-$T(n) =  \theta(n^{log_2 2} lg~n) =\theta(nlg~n)$
-\end{center}
-
-\section{Solução Linear}
-
-Existe ainda outra forma de resolver o problema do Subarray Máximo. Essa forma é descrita pelo Algoritmo ~\ref{recursiveSubArray}. Esse algoritmo é baseado no famoso algoritmo de Kadane.
-
-
-\begin{algorithm}[H]
-  \caption{Recursivo}\label{recursiveSubArray}
-  \begin{algorithmic}[1]
-    \Function{\_SubarrayMaximoRecursivo}{$A, i, j, max\_ending\_here$}
-		\If{$max\_ending\_here > 0$}
-			\State \texttt{$(i, j, max\_ending\_here) = (i, j, max\_ending\_here + A[j)$}
-		\Else
-			\State \texttt{$(i, j, max\_ending\_here) = (j, j,A[j)$}
-		\EndIf
-		\State \texttt{$(i1, j1 , max\_so\_far) \gets (0,0,0)$}
-		\If{$j+1 < len(A)$}
-			\State \texttt{$(i1, j1 , max\_so\_far)\gets \_SubarrayMaximoRecursivo(A, i, j+1, max\_ending\_here)$}
-		\Else
-			\State \texttt{$(i1, j1 , max\_so\_far) \gets (i, j, max\_ending\_here) $}
-		
-		\EndIf    
-    		\If{$max\_ending\_here  > max\_so\_far$}
-    			 \State \textbf{return} $(i, j, max\_ending\_here)$
-    		\Else
-    			 \State \textbf{return} $(i1, j1, max\_so\_far)$
-    		\EndIf
-     
-     
-     \EndFunction
-     \Function{SubarrayMaximoRecursivo}{$A, i, j, max\_ending\_here$}
-     		\State \textbf{return} $\_SubarrayMaximoRecursivo(A, 0, 0, -\infty)$
-     
-     \EndFunction
-         
-     
-     
-  \end{algorithmic}
-\end{algorithm}
-
-
-
-
-A ideia se baseia no fato de que, se temos uma soma acumulada negativa, podemos iniciar uma nova contagem no elemento corrente. Isso se deve ao fato de que, se temos uma soma acumulada menor que zero, o maior subarray acumulado passa a ser apenas o elemento. Assim, começando no primeiro termo, vamos montando subarrays usando a ideia  descrita anteriormente. Chamando recursivamente para o próximo elemento, calculamos o maior subarray terminando no próximo elemento. Avaliamos o retorno com o calculado e retornamos o maior.
-
-Para a análise de complexidade, podemos descrever o algoritmo como a seguinte recorrência:
+Onde $\theta$ é o ângulo entre $\vec{d}$ e $\vec{w}$.  Como a Equação \ref{eq1} mostra, temos em $\|\vec{d}\|.\cos(\theta)$ o comprimeto projeção de um dado sobre o vetor $\vec{w}$.  Caso 
+essa projeção seja maior que uma constante $c$, fica evidente que o dado está acima do hiperplano, sendo positivo, se for menor, está abaixo, sendo negativo, e se for igual a essa constante, é ponto do hiperplano. Formalmente, temos:
 
 \begin{center}
-$T(n) = T(n-1) + \theta(1)$
+\begin{equation}
+f(n) =
+\begin{cases}
+\vec{w}.\vec{d} > c, & \text{se }\vec{d}\text{ é positivo} \\
+\vec{w}.\vec{d} < c & \text{se }\vec{d}\text{ é negativo} \\
+\vec{w}.\vec{d} = c & \text{se }\vec{d}\text{ está no hiperplano} 
+\end{cases}
+\end{equation}
 \end{center}
 
-$\theta(n)$ representa a complexidade de cada passo. Como é sempre constante, é evidente que temos $\theta(1)$. Para resolver a recorrência, podemos fazer o seguinte ``chute":
+Ou ainda:
 
 \begin{center}
-$T(n) = \theta(n)$
+\begin{equation}
+f(n) =
+\begin{cases}
+\vec{w}.\vec{d} + b > 0, & \text{se }\vec{d}\text{ é positivo} \\
+\vec{w}.\vec{d} + b < 0 & \text{se }\vec{d}\text{ é negativo} \\
+\vec{w}.\vec{d} + b = 0 & \text{se }\vec{d}\text{ está no hiperplano} 
+\end{cases}
+\end{equation}
 \end{center}
 
-Essa hipótese justifica o caso básico, já que:
+A seguir, deve-se definir algumas condições. O classificador terá resultado 1 para vetores de suporte positivo e -1 para vetores de suporte negativo:
 
 \begin{center}
-$T(1) = \theta(1)$
+\begin{equation}
+f(n) =
+\begin{cases}
+\vec{w}.\vec{d} + b = 1, & \text{se }\vec{d}\text{ é positivo e é vetore de suporte} \\
+\vec{w}.\vec{d} + b = -1 & \text{se }\vec{d}\text{ é negativo e é vetore de suporte} \\
+\end{cases}
+\end{equation}
 \end{center}
 
-E para o passo indutivo temos:
-
-\begin{center}
-$T(n) = T(n) = T(n-1) + \theta(1) =  \theta(n) + \theta(1) = \theta(n)$
-\end{center}
-
-Assim, temos que a solução exata da recorrência é $\theta(n)$. Portanto, o algoritmo tem complexidade linear.
+Assim, podemos então maximizar essa função de forma a encontrar o hiperplano que maximiza
+a distância entre as classes. Para isso, como se tem um função com restrições, para maximizá-la, usa-se multiplicadores de Lagrange. Assim, encontra-se o classificador ótimo. Vale que ressaltar que usa-se uma solução númerica para encontrá-lo, mas como o espaço do problema é convexo, ela sempre converge para o classificador ótimo.
 
 
-\section{Considerações Finais}
+\section{SVM Multiclasses} \label{sec:firstpage}
 
-Ao implementar-mos o algoritmo na linguagem Python, verificamos a eficiência dos três algoritmos para diferentes tamanhos e conteúdos de entradas. As entradas são geradas pseudo-aleatoriamente com a função $random.seed()$ e selecionam-se $n$ números, tal que $n(i) \in [-1000,1000]$. O tempo de duração do algoritmo é medido utilizando a função $time.process\_time()$ que contabiliza apenas o tempo total de CPU que o processo recebeu.
+SVM é intrinsicamente uma técnica para classificação binária, entretanto pode facilmente ser convertida para classificar um dado entre mais de duas classes. A seguir, serão apresentadas técnicas usadas para obter essa funcionalidade.
 
-Os tempos, notação $t(a)$ (tempo do algoritmo a), em relação aos tamanhos de entrada estão expostos na tabela a seguir:
+\subsection{One-vs-All}
 
-\begin{center}
-\begin{tabular}{ | l | p{5cm} |}
-Tamanho   & Resultados \\
-\hline
-5         & $t(FB) \approx t(Lin) < t(DeC)$ \\
-10        & $t(Lin) \approx t(FB) < t(DeC)$ \\
-15        & $t(Lin) < t(FB) < t(DeC)$ \\
-50        & $t(Lin) < t(FB) < t(DeC)$ \\
-57        & $t(Lin) < t(FB) \approx t(DeC)$ \\
-65        & $t(Lin) < t(DeC) < t(FB) $\\
-\end{tabular}
-\end{center}
-Tabela 1: Mostra os resultados obtidos com os algoritmos. FB: Algoritmo Força Bruta; DeC: Divisão e Conquista; Lin: Algoritmo Linear.
-
-Como podemos verificar, com $n$ suficientemente pequeno (ie. menor que 10), os algoritmos de Força Bruta e Linear se comportam de forma parecida, variando pouco, conforme o conteúdo da entrada. O algoritmo Linear desponta como mais rápido para $n >= 15$. Já o Divisão e Conquista, para $n$ pequeno (ie. menor que 65), é pior que o Força Bruta. Com $n > 65$ os resultados apontam o Força Bruta como pior caso.
+Essa técnica consiste em criar uma SVM para cada classe separando-a das outras. Ou seja, se o problema for constituído de 3 classes, e.g, Azul, Vermelho e Amarelo, 3 SVMs serão construídas: uma que separa Azul de Vermelho e Amarelo, de Vermelho separado de Azul e Amarelo e outra que separa Amarelo de Azul e Vermellho. Após isso, entramos com um dado nessas 3 SVMs e avaliamos o resultado. 
 
 
-
-
-\bibliographystyle{sbc}
-\bibliography{sbc-template}
+%\bibliographystyle{sbc}
+%\bibliography{sbc-template}%
 
 \end{document}
