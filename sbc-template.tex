@@ -109,11 +109,62 @@ a distância entre as classes. Para isso, como se tem um função com restrições, p
 
 \section{SVM Multiclasses} \label{sec:firstpage}
 
-SVM é intrinsicamente uma técnica para classificação binária, entretanto pode facilmente ser convertida para classificar um dado entre mais de duas classes. A seguir, serão apresentadas técnicas usadas para obter essa funcionalidade.
+SVM é intrinsicamente uma técnica para classificação binária, entretanto pode facilmente ser convertida para classificar um dado entre mais de duas classes. A seguir, serão apresentadas técnicas usadas para obter essa funcionalidade. Para as sessões seguintes, esses serão os dados usados para exemplo.
+
+\begin{center}
+IMAGEM!!!1
+\end{center}
 
 \subsection{One-vs-All}
 
-Essa técnica consiste em criar uma SVM para cada classe separando-a das outras. Ou seja, se o problema for constituído de 3 classes, e.g, Azul, Vermelho e Amarelo, 3 SVMs serão construídas: uma que separa Azul de Vermelho e Amarelo, de Vermelho separado de Azul e Amarelo e outra que separa Amarelo de Azul e Vermellho. Após isso, entramos com um dado nessas 3 SVMs e avaliamos o resultado. 
+Essa técnica consiste em criar uma SVM para cada classe separando-a das outras. Ou seja, se o problema for constituído de 3 classes, 3 SVMs serão construídas: uma que separa Azul de Vermelho e Verde, uma Vermelho separado de Azul e Verde e outra que separa Verde de Azul e Vermellho. Após isso, entramos com um dado nessas 3 SVMs e avaliamos o resultado em cada.  
+
+Idealmente, apenas uma SVM classificará o dado como sendo de apenas uma classe, e essa será adotada como classificação final. Por exemplo, apenas a SVM que separa Verde de Azul e Vermelho classificou como sendo de uma classe, nesse caso Verde, sendo essa a classe final. No caso de confusão, i.e., mais de uma classificando como sendo de uma classe só, pode-se usar como critério de desempate a distância para o hiperplano em cada SVM empatada.
+
+\subsection{One-vs-One}
+
+Para essa técnica, as classes serão combinadas duas as duas. Ou seja, serão geradas a seguinte quantidade de combinações:
+
+\begin{center}
+\begin{equation}
+C*\frac{(C-1)}{2}
+\end{equation}
+\end{center}
+
+Onde $C$ é o número de classes do problema. Assim, no caso exemplo, serão geradas 6 partições de dados. Para cada uma dessas partições será gerada uma SVM. Um exemplo é mostrado a seguir.
+
+\begin{center}
+IMAGEM!!!1
+\end{center}
+
+Após isso, avaliamos o resultado de cada SVM e faz-se uma votação. Suponha uma SVM que separe a classe $i$ da classe $j$. Se essa SVM classificar como $i$, soma-se um voto para $i$, caso contrário soma-se um voto para $j$. Ao final, avalia-se qual classe recebeu mais votos. A que tiver vencido a votação será o resultado.
+
+Vale ressaltar um ponto, por mais que essa técnica gere mais SVMs do que a técnica One-vs-All, ela ainda pode ser mais rápida de treinar. Isso deve-se ao fato de que cada SVM possui um conjunto de dados de treinamento menor na técnica One-vs-One do que na One-vs-All, o que pode compensar o fato de possuir mais SVMs a serem treinadas em geral
+
+\subsection{Error Correcting Output Code}
+
+Error Correcting Output Code (ECOC) tenta reduzir o problema de um dos vários classificadres não treinar muito bem e introduzir erro no resultado. Para isso, cada classe recebe um código binário conforme mostrado na Tabela \ref{tabelaCodigo}.
+
+\begin{table}[H]  
+
+\centering
+
+\begin{tabular}{ l | c  c c c c c }
+  Classe & $f_1$ & $f_2$ & $f_3$& $f_4$& $f_5$\\
+  \hline   \hline			
+  Vermelho & 1 & 0 & 1 & 0 & 1\\
+  Azul & 0 & 0 & 1 & 1 & 1\\
+  Verde & 1 & 1 & 0 & 0 & 0\\
+  \hline  
+\end{tabular}
+
+ \caption{Códigos para a técnica ECOC}
+ \label{tabelaCodigo}
+\end{table}
+
+A ideia por trás dessa técnica é, dado um dado de entrada, encontrar o seu código e classificá-lo como sendo a que possui o código mais próximo. Para isso, uma SVM binária será criada para cada coluna. Todos os elementos cuja coluna está marcada como 1 definirão uma classe e todos marcados com 0 serão a outra classe. Classifica-se um dado novo sobre essa SVM e descobre-se se essa coluna é 0 ou 1 para ele. Fazendo isso sobre todas as colunas encontra-se o valor do código do dado, bastando então classificando-o como sendo da classe do código mais próximo.
+
+Note que cada classe possui no minimo dois bits de diferença para todas as outras . Isso garante um certo grau de tolerância a possíveis erros em classificadors de uma coluna. Essa tolerância pode ser melhorada aumentando o número de colunas (até certo ponto) a custo de processamento devido ao número de SVMs extras para calcular essas colunas.
 
 
 %\bibliographystyle{sbc}
