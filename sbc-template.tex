@@ -16,6 +16,13 @@
      
 \sloppy
 
+\usetikzlibrary{shapes.misc}
+
+\tikzset{cross/.style={cross out, draw=black, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt},
+%default radius will be 1pt. 
+cross/.default={1pt}}
+
+
 \title{Problema do Máximo Subarray\\ Uma Análise de sua Complexidade}
 
 \author{Matheus Garay Trindade\inst{1}, Guilherme de Freitas Gaiardo\inst{1} }
@@ -50,11 +57,55 @@ performance.
 
 \section{Definição matemática} \label{sec:firstpage}
 
-Para esta técnica, devemos escolher o hiperplano que melhor separa duas classes de dados em um espaço $n$-dimensional. Para ilustrar o ponto de partida, temos a Figura , onde os pontos positivos estão acima do hiperplano e os pontos negativos abaixo.
+As deduções mostradas a seguir são baseadas em \cite{mit_lect_svm}. Para esta técnica, devemos escolher o hiperplano que melhor separa duas classes de dados em um espaço $n$-dimensional. Para ilustrar o ponto de partida, temos a Figura , onde os pontos positivos estão acima do hiperplano e os pontos negativos abaixo.
 
-\begin{center}
-IMAGEM!!!!
-\end{center}
+
+\begin{figure} [h]
+\centering
+\begin{tikzpicture}[
+    thick,
+    >=stealth',
+    dot/.style = {
+      draw,
+      fill = white,
+      circle,
+      inner sep = 0pt,
+      minimum size = 4pt
+    }
+  ]
+
+  \coordinate (O) at (0,0);
+  \draw[->] (-0.3,0) -- (9,0) coordinate[label = {below:$x$}] (xmax);
+  
+  \draw[->] (0,-0.3) -- (0,7) coordinate[label = {right:$f(x)$}] (ymax);
+  \draw (0.8,1.5)  node[fill=blue] {}; 
+  \draw (1,1)  node[fill=blue] {}; 
+  \draw (0.7,0.8)  node[fill=blue] {};
+ 
+
+    \draw (3,4)  node[fill=green] {}; 
+  \draw (3.3,4.5)  node[fill=green] {}; 
+  \draw (2.7,3.7)  node[fill=green] {};
+  
+    \draw (2.2,3.4)  node[fill=red, label=right:$\vec{d}$] {};
+	
+	 \draw[dashed, ->] (-0,0) -- (2.2,3.4) coordinate[] ();  
+	 
+	 
+	 
+ \draw[dashed] (-0.3,4.4) -- (4.9,-0.3) coordinate[] ();
+ 
+  \draw[->] (-0.0,0) -- (2, 2.2) coordinate[label = below:$\vec{w}$] ();
+ 
+  \draw[-] (-0.3,6.3) -- (7.3,-0.3) coordinate[] ();
+  \draw[-] (-0.3,2.5) -- (2.78,-0.3) coordinate[] ();
+  
+  
+ \end{tikzpicture}
+	\caption{Dados de Exemplo}
+    \label{dataset}
+\end{figure}
+
 
 
 Para encontrar o hiperplano de fato, é mais conveniente começar por definir o classificador. Para isso, define-se uma função que, dependendo do seu resultado, mostrará se o dado é de uma classe ou de outra, e.g., positivo ou negativo. Assumindo que se conhece hiperplano, pega-se um vetor $\vec{w}$  perpendicular à ele. Temos que a projeção $P$ de um dado $\vec{d}$ sobre esse vetor tem valor dado pela seguinte função:
@@ -110,10 +161,10 @@ a distância entre as classes. Para isso, como se tem um função com restrições, p
 
 \section{SVM Multiclasses} \label{sec:firstpage}
 
-SVM é intrinsicamente uma técnica para classificação binária, entretanto pode facilmente ser convertida para classificar um dado entre mais de duas classes. A seguir, serão apresentadas técnicas usadas para obter essa funcionalidade. Para as sessões seguintes, esses serão os dados usados mostrados na Figura \ref{dataset}.
+SVM é intrinsicamente uma técnica para classificação binária, entretanto pode facilmente ser convertida para classificar um dado entre mais de duas classes. A seguir, serão apresentadas técnicas usadas para obter essa funcionalidade  \cite{991427}. Para as sessões seguintes, os dados a serem usados são mostrados na Figura \ref{dataset}.
 
 
-\begin{figure} [H]
+\begin{figure} [h]
 \centering
 \begin{tikzpicture}[
     thick,
@@ -158,7 +209,7 @@ Idealmente, apenas uma SVM classificará o dado como sendo de apenas uma classe, 
 
 
 
-\begin{figure} [H]
+\begin{figure} [h]
 \centering
 \begin{tikzpicture}[
     thick,
@@ -209,7 +260,7 @@ Onde $C$ é o número de classes do problema. Assim, no caso exemplo, serão gerada
 
 
 
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 
 
@@ -281,7 +332,7 @@ Note que cada classe possui no minimo dois bits de diferença para todas as outra
 
 
 
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 
 
@@ -324,7 +375,7 @@ Note que cada classe possui no minimo dois bits de diferença para todas as outra
 
 
 
-%\bibliographystyle{sbc}
-%\bibliography{sbc-template}%
+\bibliographystyle{sbc}
+\bibliography{sbc-template}%
 
 \end{document}
